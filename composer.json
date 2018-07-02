@@ -19,11 +19,11 @@
         "php": "~7.2",
         "ext-soap": "*",
         "symfony/options-resolver": "~3.0|~4.0",
-        "symfony/polyfill-iconv": "~1.8"
+        "symfony/polyfill-iconv": "~1.8",
+        "psr/log": "~1.0"
     },
     "require-dev": {
         "php-vcr/php-vcr": "~1.4",
-        "phpunit/phpunit": "~7.0",
-        "psr/log": "~1.0"
+        "phpunit/phpunit": "~7.0"
     }
 }
