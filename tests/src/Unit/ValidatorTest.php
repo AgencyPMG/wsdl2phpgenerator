@@ -75,4 +75,19 @@ class ValidatorTest extends UnitTestCase
         $this->assertEquals('validarContrasena[]', Validator::validateType('validarContraseña[]')); //UTF-8 array type
     }
 
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/3
+     */
+    public function testValidateBuildIntTypeArrayTypeValidatesTheOriginalType()
+    {
+        $this->assertEquals('int[]', Validator::validateType('long[]'));
+    }
+
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/3
+     */
+    public function testVAlidateWithClassTypeArrayValidatesTheOriginalClass()
+    {
+        $this->assertEquals('Foo[]', Validator::validateType('Foo[]'));
+    }
 }
