@@ -2,7 +2,6 @@
 
 namespace Wsdl2PhpGenerator\Tests\Unit;
 
-use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -15,7 +14,7 @@ use Wsdl2PhpGenerator\Type;
  *
  * Contains various assertions for examining code.
  */
-class CodeGenerationTestCase extends PHPUnit_Framework_TestCase
+class CodeGenerationTestCase extends UnitTestCase
 {
 
     /**

@@ -8,11 +8,12 @@ use Wsdl2PhpGenerator\Enum;
 use Wsdl2PhpGenerator\Filter\ServiceOperationFilter;
 use Wsdl2PhpGenerator\Operation;
 use Wsdl2PhpGenerator\Service;
+use Wsdl2PhpGenerator\Tests\Unit\UnitTestCase;
 
 /**
  * Use test for the ServiceOperationFilter class.
  */
-class ServiceOperationFilterTest extends \PHPUnit_Framework_TestCase
+class ServiceOperationFilterTest extends UnitTestCase
 {
     /**
      * @var ConfigInterface

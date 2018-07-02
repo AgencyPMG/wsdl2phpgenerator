@@ -20,11 +20,10 @@ class NaicsTest extends FunctionalTestCase
         return $this->fixtureDir . '/naics/GenericNAICS.wsdl';
     }
 
-    /**
-     * @vcr NaicsTest_testNaics
-     */
     public function testNaics()
     {
+        $this->recordRequests(__FUNCTION__);
+
         // Perform the request.
         $service = new \GenericNAICS();
         $request = new \GetNAICSByIndustry('Computer Systems');
@@ -78,11 +77,10 @@ class NaicsTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @vcr NaicsTest_testSingleNaics
-     */
     public function testSingleNaics()
     {
+        $this->recordRequests(__FUNCTION__);
+
         $service = new \GenericNAICS();
         // Requesting a specific ID should be a sure way to only return a single result.
         $request = new \GetNAICSByID('54151');
