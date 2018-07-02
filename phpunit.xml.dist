@@ -30,10 +30,6 @@
         <listener class="PHPUnit_Util_Log_VCR" file="vendor/php-vcr/phpunit-testlistener-vcr/PHPUnit/Util/Log/VCR.php" />
     </listeners>
 
-    <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
-
     <!-- Only determine code coverage for directories with our own code, src and lib. -->
     <filter>
         <whitelist>
