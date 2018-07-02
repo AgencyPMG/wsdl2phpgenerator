@@ -61,7 +61,7 @@ class ArrayTypeTest extends CodeGenerationTestCase
     {
         $this->assertClassExists($this->testClassName);
         $this->assertClassImplementsInterface($this->testClassName, 'ArrayAccess');
-        $this->assertClassImplementsInterface($this->testClassName, 'Iterator');
+        $this->assertClassImplementsInterface($this->testClassName, 'Traversable');
         $this->assertClassImplementsInterface($this->testClassName, 'Countable');
     }
 
@@ -104,11 +104,7 @@ class ArrayTypeTest extends CodeGenerationTestCase
      */
     public function testIteratorImplementation()
     {
-        $this->assertClassHasMethod($this->testClassName, 'current');
-        $this->assertClassHasMethod($this->testClassName, 'key');
-        $this->assertClassHasMethod($this->testClassName, 'next');
-        $this->assertClassHasMethod($this->testClassName, 'rewind');
-        $this->assertClassHasMethod($this->testClassName, 'valid');
+        $this->assertClassHasMethod($this->testClassName, 'getIterator');
 
         // Test all Iterator methods
         // (both cycles must pass)
