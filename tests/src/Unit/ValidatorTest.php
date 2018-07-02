@@ -86,8 +86,16 @@ class ValidatorTest extends UnitTestCase
     /**
      * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/3
      */
-    public function testVAlidateWithClassTypeArrayValidatesTheOriginalClass()
+    public function testValidateWithClassTypeArrayValidatesTheOriginalClass()
     {
         $this->assertEquals('Foo[]', Validator::validateType('Foo[]'));
+    }
+
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/5
+     */
+    public function testValidatingBase64BinaryTypesMarksThemAsPHPStrings()
+    {
+        $this->assertEquals('string', Validator::validateType('base64Binary'));
     }
 }

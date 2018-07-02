@@ -218,6 +218,7 @@ class Validator
             case "token":
             case "normalizedstring":
             case "hexbinary":
+            case "base64binary":
                 return 'string';
                 break;
             case "datetime":
