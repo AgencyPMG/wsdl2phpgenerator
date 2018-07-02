@@ -10,7 +10,7 @@ use Wsdl2PhpGenerator\StreamContextFactory;
 /**
  * Unit test for the stream context factory.
  */
-class StreamContextFactoryTest extends \PHPUnit_Framework_TestCase
+class StreamContextFactoryTest extends UnitTestCase
 {
 
     /**

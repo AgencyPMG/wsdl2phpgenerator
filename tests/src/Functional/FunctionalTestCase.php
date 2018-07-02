@@ -1,6 +1,7 @@
 <?php
 namespace Wsdl2PhpGenerator\Tests\Functional;
 
+use VCR\VCR;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -139,5 +140,11 @@ abstract class FunctionalTestCase extends CodeGenerationTestCase
         $this->assertFileExists($file);
         require_once $file;
         $this->assertClassExists($className, $namespaceName);
+    }
+
+    protected function recordRequests(string $method)
+    {
+        $cls = explode('\\', get_class($this));
+        VCR::insertCassette(array_pop($cls).'_'.$method);
     }
 }
