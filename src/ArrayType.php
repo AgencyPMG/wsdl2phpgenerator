@@ -137,88 +137,22 @@ class ArrayType extends ComplexType
 
     protected function implementIterator()
     {
-        $this->class->addImplementation('\\Iterator');
-        $description = 'Iterator implementation';
+        $this->class->addImplementation('\\IteratorAggregate');
 
-        $currentDock = new PhpDocComment();
-        $currentDock->setDescription($description);
-        $currentDock->setReturn(PhpDocElementFactory::getReturn($this->arrayOf, 'Return the current element'));
-        $current = new PhpFunction(
+        $docblock = new PhpDocComment();
+        $docblock->setDescription('Traversable Implementation');
+        $docblock->setReturn(PhpDocElementFactory::getReturn($this->arrayOf.'[]', 'Return an iterator of the elements'));
+        $iter = new PhpFunction(
             'public',
-            'current',
-            $this->buildParametersString(
-                array(),
-                false,
-                false
+            'getIterator',
+            $this->buildParametersString(array(), false, false),
+            sprintf(
+                '    return new \ArrayIterator($this->%s);',
+                $this->field->getName()
             ),
-            '  return current($this->' . $this->field->getName() . ');',
-            $currentDock
+            $docblock
         );
-        $this->class->addFunction($current);
-
-        $nextDock = new PhpDocComment();
-        $nextDock->setDescription($description . PHP_EOL . 'Move forward to next element');
-        $nextDock->setReturn(PhpDocElementFactory::getReturn('void', ''));
-        $next = new PhpFunction(
-            'public',
-            'next',
-            $this->buildParametersString(
-                array(),
-                false,
-                false
-            ),
-            '  next($this->' . $this->field->getName() . ');',
-            $nextDock
-        );
-        $this->class->addFunction($next);
-
-        $keyDock = new PhpDocComment();
-        $keyDock->setDescription($description);
-        $keyDock->setReturn(PhpDocElementFactory::getReturn('string|null', 'Return the key of the current element or null'));
-        $key = new PhpFunction(
-            'public',
-            'key',
-            $this->buildParametersString(
-                array(),
-                false,
-                false
-            ),
-            '  return key($this->' . $this->field->getName() . ');',
-            $keyDock
-        );
-        $this->class->addFunction($key);
-
-        $validDock = new PhpDocComment();
-        $validDock->setDescription($description);
-        $validDock->setReturn(PhpDocElementFactory::getReturn('boolean', 'Return the validity of the current position'));
-        $valid = new PhpFunction(
-            'public',
-            'valid',
-            $this->buildParametersString(
-                array(),
-                false,
-                false
-            ),
-            '  return $this->key() !== null;',
-            $validDock
-        );
-        $this->class->addFunction($valid);
-
-        $rewindDock = new PhpDocComment();
-        $rewindDock->setDescription($description . PHP_EOL . 'Rewind the Iterator to the first element');
-        $rewindDock->setReturn(PhpDocElementFactory::getReturn('void', ''));
-        $rewind = new PhpFunction(
-            'public',
-            'rewind',
-            $this->buildParametersString(
-                array(),
-                false,
-                false
-            ),
-            '  reset($this->' . $this->field->getName() . ');',
-            $rewindDock
-        );
-        $this->class->addFunction($rewind);
+        $this->class->addFunction($iter);
     }
 
     protected function implementCountable()
