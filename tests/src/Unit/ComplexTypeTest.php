@@ -6,6 +6,8 @@ namespace Wsdl2PhpGenerator\Tests\Unit;
 
 use Wsdl2PhpGenerator\ComplexType;
 use Wsdl2PhpGenerator\Config;
+use Wsdl2PhpGenerator\Enum;
+use Wsdl2PhpGenerator\TypeRegistry;
 
 /**
  * Unit test for the ComplexType class.
@@ -214,6 +216,86 @@ class ComplexTypeTest extends CodeGenerationTestCase
         $this->assertNull($object->getADateTime());
     }
 
+    public static function namespaces()
+    {
+        return [
+            'no namespace' => [''],
+            'namespace' => ['TestNs'],
+        ];
+    }
+
+    /**
+     * @dataProvider namespaces
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/12
+     */
+    public function testEnumMembersSetTypeHintToOriginalEnumDataType(string $namespace)
+    {
+        $config = new Config(array(
+            'inputFile' => null,
+            'outputDir' => null,
+            'namespaceName' => $namespace,
+        ));
+        $enum = new Enum($config, 'AnEnum', 'string');
+        $types = TypeRegistry::fromIterable([$enum]);
+        $type = new ComplexType($config, 'TypeWithEnumMember', $types);
+        $type->addMember('AnEnum', 'anEnum', false);
+
+        $this->generateClass($type, $namespace);
+
+        $ref = new \ReflectionClass($namespace.'\\TypeWithEnumMember');
+
+        $this->assertTrue($ref->hasProperty('anEnum'));
+        $prop = $ref->getProperty('anEnum');
+        $docblock = $prop->getDocComment();
+        $this->assertContains('@var string', $docblock);
+        $this->assertContains($namespace ? "@see \\{$namespace}\\AnEnum" : '@see AnEnum', $docblock);
+    }
+
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/12
+     */
+    public function testSettersForEnumMembersUseUnderlyingEnumTypeAsParam()
+    {
+        $config = new Config(array(
+            'inputFile' => null,
+            'outputDir' => null,
+        ));
+        $enum = new Enum($config, __FUNCTION__.'Enum', 'string');
+        $types = TypeRegistry::fromIterable([$enum]);
+        $type = new ComplexType($config, __FUNCTION__.'Type', $types);
+        $type->addMember(__FUNCTION__.'Enum', 'anEnum', false);
+
+        $this->generateClass($type);
+
+        $ref = new \ReflectionClass(__FUNCTION__.'Type');
+
+        $meth = $ref->getMethod('setAnEnum');
+        $docblock = $meth->getDocComment();
+        $this->assertContains('@param string $anEnum', $docblock);
+    }
+
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/12
+     */
+    public function testGettersForEnumMembersUseTheirUnderlyingTypeAsReturn()
+    {
+        $config = new Config(array(
+            'inputFile' => null,
+            'outputDir' => null,
+        ));
+        $enum = new Enum($config, __FUNCTION__.'Enum', 'string');
+        $types = TypeRegistry::fromIterable([$enum]);
+        $type = new ComplexType($config, __FUNCTION__.'Type', $types);
+        $type->addMember(__FUNCTION__.'Enum', 'anEnum', false);
+
+        $this->generateClass($type);
+
+        $ref = new \ReflectionClass(__FUNCTION__.'Type');
+
+        $meth = $ref->getMethod('getAnEnum');
+        $docblock = $meth->getDocComment();
+        $this->assertContains('@return string', $docblock);
+    }
 
     /**
      * Sets object property value using reflection.
