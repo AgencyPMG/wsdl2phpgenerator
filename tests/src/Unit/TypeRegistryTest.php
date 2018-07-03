@@ -2,6 +2,8 @@
 
 namespace Wsdl2PhpGenerator\Tests\Unit;
 
+use Wsdl2PhpGenerator\Config;
+use Wsdl2PhpGenerator\ComplexType;
 use Wsdl2PhpGenerator\Type;
 use Wsdl2PhpGenerator\TypeRegistry;
 
@@ -21,38 +23,36 @@ class TypeRegistryTest extends CodeGenerationTestCase
 
     public function testTypesThatAreRegisteredReturnTrueFromHas()
     {
-        $type = $this->createMock(Type::class);
-        $type->expects($this->once())
-            ->method('getIdentifier')
-            ->willReturn('SomeType');
-        $this->types->add($type);
+        $this->types->add($this->createType('SomeType'));
 
         $this->assertTrue($this->types->has('SomeType'));
     }
 
     public function testTypesThatAreRegisteredAreReturnsFromGet()
     {
-        $type = $this->createMock(Type::class);
-        $type->expects($this->once())
-            ->method('getIdentifier')
-            ->willReturn('SomeType');
+        $type = $this->createType('SomeType');
         $this->types->add($type);
 
         $this->assertSame($type, $this->types->get('SomeType'));
     }
 
+    public function testUnregisteredTypesReturnNullFromGetByPhpIdentifier()
+    {
+        $this->assertNull($this->types->getByPhpIdentifier('SomeType'));
+    }
+
+    public function testRegisterTypesReturnTypeObjectFromGetByPhpIdentifier()
+    {
+        $type = $this->createType('SomeType');
+        $this->types->add($type);
+
+        $this->assertSame($type, $this->types->getByPhpIdentifier('SomeType'));
+    }
+
     public function testTypesCanBeRemovedFromTheRegistry()
     {
-        $t1 = $this->createMock(Type::class);
-        $t1->expects($this->once())
-            ->method('getIdentifier')
-            ->willReturn('SomeType');
-        $t2 = $this->createMock(Type::class);
-        $t2->expects($this->once())
-            ->method('getIdentifier')
-            ->willReturn('OtherType');
-        $this->types->add($t1);
-        $this->types->add($t2);
+        $this->types->add($this->createType('SomeType'));
+        $this->types->add($this->createType('OtherType'));
         $this->assertTrue($this->types->has('SomeType'));
         $this->assertTrue($this->types->has('OtherType'));
 
@@ -65,5 +65,13 @@ class TypeRegistryTest extends CodeGenerationTestCase
     protected function setUp()
     {
         $this->types = new TypeRegistry();
+    }
+
+    protected function createType(string $name) : Type
+    {
+        return new ComplexType(new Config([
+            'inputFile' => __FILE__,
+            'outputDir' => __DIR__,
+        ]), $name);
     }
 }

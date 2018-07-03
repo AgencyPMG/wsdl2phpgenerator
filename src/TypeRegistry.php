@@ -7,30 +7,37 @@ namespace Wsdl2PhpGenerator;
 
 class TypeRegistry implements \IteratorAggregate
 {
-    private $types = [];
+    private $typesByIdentifier = [];
+    private $typesByPhpIdentifier = [];
 
-    public function has(string $typename) : bool
+    public function has(string $identifier) : bool
     {
-        return isset($this->types[$typename]);
+        return isset($this->typesByIdentifier[$identifier]);
     }
 
-    public function get(string $typename) : ?Type
+    public function get(string $identifier) : ?Type
     {
-        return $this->types[$typename] ?? null;
+        return $this->typesByIdentifier[$identifier] ?? null;
+    }
+
+    public function getByPhpIdentifier(string $phpIdentifier) : ?Type
+    {
+        return $this->typesByPhpIdentifier[$phpIdentifier] ?? null;
     }
 
     public function add(Type $type) : void
     {
-        $this->types[$type->getIdentifier()] = $type;
+        $this->typesByIdentifier[$type->getIdentifier()] = $type;
+        $this->typesByPhpIdentifier[$type->getPhpIdentifier()] = $type;
     }
 
-    public function remove(string $typename) : void
+    public function remove(string $identifier) : void
     {
-        unset($this->types[$typename]);
+        unset($this->typesByIdentifier[$identifier]);
     }
 
     public function getIterator() : \ArrayIterator
     {
-        return new \ArrayIterator($this->types);
+        return new \ArrayIterator($this->typesByIdentifier);
     }
 }
