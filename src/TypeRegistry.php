@@ -10,6 +10,16 @@ class TypeRegistry implements \IteratorAggregate
     private $typesByIdentifier = [];
     private $typesByPhpIdentifier = [];
 
+    public static function fromIterable(iterable $types) : self
+    {
+        $out = new self();
+        foreach ($types as $type) {
+            $out->add($type);
+        }
+
+        return $out;
+    }
+
     public function has(string $identifier) : bool
     {
         return isset($this->typesByIdentifier[$identifier]);

@@ -54,19 +54,16 @@ class Service implements ClassGenerator
     /**
      * @param ConfigInterface $config Configuration
      * @param string $identifier The name of the service
-     * @param array $types The types the service knows about
+     * @param TypeRegistery $types The types the service knows about
      * @param string $description The description of the service
      */
-    public function __construct(ConfigInterface $config, $identifier, iterable $types, $description)
+    public function __construct(ConfigInterface $config, $identifier, TypeRegistry $types, $description)
     {
         $this->config = $config;
         $this->identifier = $identifier;
         $this->description = $description;
         $this->operations = array();
-        $this->types = array();
-        foreach ($types as $type) {
-            $this->types[$type->getIdentifier()] = $type;
-        }
+        $this->types = $types;
     }
 
     /**
@@ -120,14 +117,14 @@ class Service implements ClassGenerator
      *
      * @return Type|null The type or null if the type does not exist.
      */
-    public function getType($identifier)
+    public function getType(string $identifier)
     {
-        return isset($this->types[$identifier])? $this->types[$identifier]: null;
+        return $this->types->get($identifier);
     }
     /**
      * Returns all types defined by the service.
      *
-     * @return Type[] An array of types.
+     * @return TypeRegistry An array of types.
      */
     public function getTypes()
     {

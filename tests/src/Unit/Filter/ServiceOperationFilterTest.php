@@ -7,6 +7,7 @@ use Wsdl2PhpGenerator\ConfigInterface;
 use Wsdl2PhpGenerator\Enum;
 use Wsdl2PhpGenerator\Filter\ServiceOperationFilter;
 use Wsdl2PhpGenerator\Operation;
+use Wsdl2PhpGenerator\TypeRegistry;
 use Wsdl2PhpGenerator\Service;
 use Wsdl2PhpGenerator\Tests\Unit\UnitTestCase;
 
@@ -120,7 +121,7 @@ class ServiceOperationFilterTest extends UnitTestCase
             $bookType,
             $requestSetVersion
         );
-        $service = new Service($this->config, 'Book_Shell', $types, 'Book shells');
+        $service = new Service($this->config, 'Book_Shell', TypeRegistry::fromIterable($types), 'Book shells');
         $service->addOperation($getBookOperation);
         $service->addOperation($getAuthorsOperator);
         $service->addOperation($setVersionOperator);
