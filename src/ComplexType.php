@@ -108,8 +108,19 @@ class ComplexType extends Type
             $type = Validator::validateType($member->getType());
             $name = Validator::validateAttribute($member->getName());
             $typeHint = Validator::validateTypeHint($type);
+            $otherType = $this->otherTypes->get($type);
+            $docDescription = '';
+            if ($otherType instanceof Enum) {
+                $docDescription = sprintf(
+                    '@see %s for valid values',
+                    $otherType->getPhpNamespacedIdentifier()
+                );
+                $type = $otherType->getDatatype();
+                $typeHint = Validator::validateTypeHint($type);
+            }
 
             $comment = new PhpDocComment();
+            $comment->setDescription($docDescription);
             $comment->setVar(PhpDocElementFactory::getVar($type, $name, ''));
             $var = new PhpVariable('protected', $name, 'null', $comment);
             $this->class->addVariable($var);
