@@ -6,6 +6,7 @@ namespace Wsdl2PhpGenerator\Tests\Unit;
 
 use Wsdl2PhpGenerator\Config;
 use Wsdl2PhpGenerator\Service;
+use Wsdl2PhpGenerator\TypeRegistry;
 use Wsdl2PhpGenerator\Tests\Functional\FunctionalTestCase;
 
 /**
@@ -44,7 +45,7 @@ class ServiceTest extends CodeGenerationTestCase
                 'soapClientOptions' => $this->soapclientOptions,
             ));
 
-        $service = new Service($config, 'TestService', array(), 'Service description');
+        $service = new Service($config, 'TestService', new TypeRegistry(), 'Service description');
         $this->generateClass($service, $this->namespace);
 
         $this->assertClassExists('TestService', $this->namespace);

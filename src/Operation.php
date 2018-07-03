@@ -76,10 +76,10 @@ class Operation
     }
 
     /**
-     * @param Type[] $validTypes An array of Type objects with valid types for typehinting
+     * @param TypeRegistry $validTypes An array of Type objects with valid types for typehinting
      * @return string A parameter string
      */
-    public function getParamString(array $validTypes)
+    public function getParamString(TypeRegistry $validTypes)
     {
         $params = array();
 
@@ -90,13 +90,9 @@ class Operation
             if ($typeHint == 'array') {
                 $ret .= $typeHint . ' ';
             } else {
-                foreach ($validTypes as $type) {
-                    if ($type instanceof ComplexType) {
-                        if ($typeHint == $type->getPhpIdentifier()) {
-                            $ret .= $typeHint . ' ';
-                            break;
-                        }
-                    }
+                $type = $validTypes->getByPhpIdentifier($typeHint);
+                if ($type instanceof ComplexType) {
+                    $ret .= $typeHint . ' ';
                 }
             }
 
@@ -113,10 +109,10 @@ class Operation
     /**
      *
      * @param string $name The param to get
-     * @param array An array of Type objects with valid types for typehinting
+     * @param TypeRegistry $validTypes The type objects with valid types for typehinting
      * @return array A array with three keys 'type' => the typehint to use 'name' => the name of the param and 'desc' => A description of the param
      */
-    public function getPhpDocParams($name, array $validTypes)
+    public function getPhpDocParams($name, TypeRegistry $validTypes)
     {
         $ret = array();
 
@@ -131,17 +127,16 @@ class Operation
 
         $ret['type'] = $paramType;
 
-        foreach ($validTypes as $type) {
-            if ($paramType == $type->getIdentifier()) {
-                if ($type instanceof Pattern) {
-                    $ret['type'] = $type->getDatatype();
-                    $ret['desc'] = 'Restriction pattern: ' . $type->getValue();
-                } else {
-                    $ret['type'] = $type->getPhpIdentifier();
+        $type = $validTypes->get($paramType);
+        if ($type) {
+            if ($type instanceof Pattern) {
+                $ret['type'] = $type->getDatatype();
+                $ret['desc'] = 'Restriction pattern: ' . $type->getValue();
+            } else {
+                $ret['type'] = $type->getPhpIdentifier();
 
-                    if ($type instanceof Enum) {
-                        $ret['desc'] = 'Constant: ' . $type->getDatatype() . ' - ' . 'Valid values: ' . $type->getValidValues();
-                    }
+                if ($type instanceof Enum) {
+                    $ret['desc'] = 'Constant: ' . $type->getDatatype() . ' - ' . 'Valid values: ' . $type->getValidValues();
                 }
             }
         }

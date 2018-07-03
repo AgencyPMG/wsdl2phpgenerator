@@ -7,6 +7,7 @@ use Wsdl2PhpGenerator\ConfigInterface;
 use Wsdl2PhpGenerator\Enum;
 use Wsdl2PhpGenerator\Service;
 use Wsdl2PhpGenerator\Type;
+use Wsdl2PhpGenerator\TypeRegistry;
 use Wsdl2PhpGenerator\Variable;
 
 /**
@@ -58,10 +59,8 @@ class ServiceOperationFilter implements FilterInterface
             }
             // Discover types used in returns
             $returns = $operation->getReturns();
-
-            $type = $service->getType($returns);
-            if ($type !== null) {
-                $methodTypes[] = $type;
+            if ($returns && ($returnType = $service->getType($returns))) {
+                $methodTypes[] = $returnType;
             }
 
             foreach ($methodTypes as $type) {
@@ -73,7 +72,12 @@ class ServiceOperationFilter implements FilterInterface
         // Remove duplicated using standard equality checks. Default string
         // comparison does not work here.
         $types = array_unique($types, SORT_REGULAR);
-        $filteredService = new Service($this->config, $service->getIdentifier(), $types, $service->getDescription());
+        $filteredService = new Service(
+            $this->config,
+            $service->getIdentifier(),
+            TypeRegistry::fromIterable($types),
+            $service->getDescription()
+        );
         // Pull created service with operations
         foreach ($operations as $operation) {
             $filteredService->addOperation($operation);
