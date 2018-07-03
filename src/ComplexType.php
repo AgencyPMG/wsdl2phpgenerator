@@ -115,7 +115,7 @@ class ComplexType extends Type
                     '@see %s for valid values',
                     $otherType->getPhpNamespacedIdentifier()
                 );
-                $type = $otherType->getDatatype();
+                $type = Validator::validateType($otherType->getDatatype());
                 $typeHint = Validator::validateTypeHint($type);
             }
 
