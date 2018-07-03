@@ -55,7 +55,7 @@ class Generator implements GeneratorInterface
     public function __construct()
     {
         $this->service = null;
-        $this->types = array();
+        $this->types = new TypeRegistry();
     }
 
     /**
@@ -103,7 +103,7 @@ class Generator implements GeneratorInterface
 
         $this->wsdl = new WsdlDocument($this->config, $wsdl);
 
-        $this->types = array();
+        $this->types = new TypeRegistry();
 
         $this->loadTypes();
         $this->loadService();
@@ -179,7 +179,7 @@ class Generator implements GeneratorInterface
                     }
                 }
                 if (!$already_registered) {
-                    $this->types[$typeNode->getName()] = $type;
+                    $this->types->add($type);
                 }
             }
         }
@@ -188,8 +188,10 @@ class Generator implements GeneratorInterface
         // We can only do this once all types have been loaded. Otherwise we risk referencing types which have not been
         // loaded yet.
         foreach ($types as $type) {
-            if (($baseType = $type->getBase()) && isset($this->types[$baseType]) && $this->types[$baseType] instanceof ComplexType) {
-                $this->types[$type->getName()]->setBaseType($this->types[$baseType]);
+            if (($baseType = $type->getBase()) && $this->types->get($baseType) instanceof ComplexType) {
+                $this->types->get($type->getName())->setBaseType(
+                    $this->types->get($baseType)
+                );
             }
         }
 

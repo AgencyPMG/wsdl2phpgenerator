@@ -57,7 +57,7 @@ class Service implements ClassGenerator
      * @param array $types The types the service knows about
      * @param string $description The description of the service
      */
-    public function __construct(ConfigInterface $config, $identifier, array $types, $description)
+    public function __construct(ConfigInterface $config, $identifier, iterable $types, $description)
     {
         $this->config = $config;
         $this->identifier = $identifier;
