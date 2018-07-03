@@ -50,15 +50,6 @@ class Generator implements GeneratorInterface
     protected $logger;
 
     /**
-     * Construct the generator
-     */
-    public function __construct()
-    {
-        $this->service = null;
-        $this->types = new TypeRegistry();
-    }
-
-    /**
      * Generates php source code from a wsdl file
      *
      * @param ConfigInterface $config The config to use for generation
