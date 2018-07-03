@@ -49,6 +49,11 @@ class Generator implements GeneratorInterface
      */
     protected $logger;
 
+    public function __construct()
+    {
+        // noop
+    }
+
     /**
      * Generates php source code from a wsdl file
      *
