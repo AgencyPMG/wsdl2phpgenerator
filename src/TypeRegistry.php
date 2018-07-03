@@ -35,9 +35,10 @@ class TypeRegistry implements \IteratorAggregate
         return $this->typesByPhpIdentifier[$phpIdentifier] ?? null;
     }
 
-    public function add(Type $type) : void
+    public function add(Type $type, ?string $identifierOverride=null) : void
     {
-        $this->typesByIdentifier[$type->getIdentifier()] = $type;
+        $id = $identifierOverride ?? $type->getIdentifier();
+        $this->typesByIdentifier[$id] = $type;
         $this->typesByPhpIdentifier[$type->getPhpIdentifier()] = $type;
     }
 

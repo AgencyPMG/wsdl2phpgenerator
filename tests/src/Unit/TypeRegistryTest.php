@@ -62,6 +62,14 @@ class TypeRegistryTest extends CodeGenerationTestCase
         $this->assertTrue($this->types->has('OtherType'));
     }
 
+    public function testAddWithIdentifierOverrideUsesTheOverridenIdentifierAsKey()
+    {
+        $this->types->add($this->createType('SomeType'), 'OverrideIdent');
+
+        $this->assertTrue($this->types->has('OverrideIdent'));
+        $this->assertFalse($this->types->has('SomeType'));
+    }
+
     protected function setUp()
     {
         $this->types = new TypeRegistry();
