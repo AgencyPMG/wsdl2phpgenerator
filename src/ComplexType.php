@@ -41,17 +41,24 @@ class ComplexType extends Type
     protected $abstract;
 
     /**
+     * @var TypeRegistry
+     */
+    private $otherTypes;
+
+    /**
      * Construct the object
      *
      * @param ConfigInterface $config The configuration
      * @param string $name The identifier for the class
+     * @param $otherTypes Other types available to the complex type. Pass this to get better doc blocks for enums
      */
-    public function __construct(ConfigInterface $config, $name)
+    public function __construct(ConfigInterface $config, $name, TypeRegistry $otherTypes=null)
     {
         parent::__construct($config, $name, null);
         $this->members = array();
         $this->baseType = null;
         $this->abstract = false;
+        $this->otherTypes = $otherTypes ?? new TypeRegistry();
     }
 
     /**
