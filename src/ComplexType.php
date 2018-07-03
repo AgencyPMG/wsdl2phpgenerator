@@ -110,7 +110,7 @@ class ComplexType extends Type
             $typeHint = Validator::validateTypeHint($type);
             $otherType = $this->otherTypes->get($type);
             $docDescription = '';
-            if ($otherType instanceof Enum) {
+            if ($otherType instanceof Enum && $this->config->get('useUnderlyingEnumTypes')) {
                 $docDescription = sprintf(
                     '@see %s for valid values',
                     $otherType->getPhpNamespacedIdentifier()

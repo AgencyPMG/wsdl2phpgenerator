@@ -234,6 +234,7 @@ class ComplexTypeTest extends CodeGenerationTestCase
             'inputFile' => null,
             'outputDir' => null,
             'namespaceName' => $namespace,
+            'useUnderlyingEnumTypes' => true,
         ));
         $enum = new Enum($config, 'AnEnum', 'string');
         $types = TypeRegistry::fromIterable([$enum]);
@@ -259,6 +260,7 @@ class ComplexTypeTest extends CodeGenerationTestCase
         $config = new Config(array(
             'inputFile' => null,
             'outputDir' => null,
+            'useUnderlyingEnumTypes' => true,
         ));
         $enum = new Enum($config, __FUNCTION__.'Enum', 'string');
         $types = TypeRegistry::fromIterable([$enum]);
@@ -282,6 +284,7 @@ class ComplexTypeTest extends CodeGenerationTestCase
         $config = new Config(array(
             'inputFile' => null,
             'outputDir' => null,
+            'useUnderlyingEnumTypes' => true,
         ));
         $enum = new Enum($config, __FUNCTION__.'Enum', 'string');
         $types = TypeRegistry::fromIterable([$enum]);
