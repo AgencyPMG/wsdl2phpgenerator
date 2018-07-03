@@ -134,4 +134,17 @@ class ArrayTypeTest extends CodeGenerationTestCase
 
         $this->assertCount(count($this->items), $this->class);
     }
+
+    /**
+     * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/7
+     */
+    public function testGeneratedClassHasExchangeArrayImplemented()
+    {
+        $this->assertClassHasMethod($this->testClassName, 'exchangeArray');
+
+        $prev = $this->class->exchangeArray(['changed']);
+
+        $this->assertSame($this->items, $prev);
+        $this->assertSame(['changed'], iterator_to_array($this->class));
+    }
 }

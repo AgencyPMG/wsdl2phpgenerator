@@ -177,6 +177,28 @@ class ArrayType extends ComplexType
         $this->class->addFunction($count);
     }
 
+    protected function implementExchangeArray()
+    {
+        $doc = new PhpDocComment();
+        $doc->setDescription('Change the current array with another');
+        $doc->setReturn(PhpDocElementFactory::getReturn($this->arrayOf.'[]|null', 'The previous array if present'));
+        $ex = new PhpFunction(
+            'public',
+            'exchangeArray',
+            $this->buildParametersString([
+                $this->field->getName() => 'array',
+            ], true, false),
+            implode(PHP_EOL, [
+                sprintf('    $prev = $this->%s;', $this->field->getName()),
+                sprintf('    $this->%1$s = $%1$s;', $this->field->getName()),
+                '    return $prev;'
+            ]),
+            $doc
+        );
+
+        $this->class->addFunction($ex);
+    }
+
     protected function implementArrayInterfaces()
     {
         $members = array_values($this->members);
@@ -186,5 +208,6 @@ class ArrayType extends ComplexType
         $this->implementArrayAccess();
         $this->implementIterator();
         $this->implementCountable();
+        $this->implementExchangeArray();
     }
 }
