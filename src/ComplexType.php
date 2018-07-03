@@ -41,17 +41,24 @@ class ComplexType extends Type
     protected $abstract;
 
     /**
+     * @var TypeRegistry
+     */
+    private $otherTypes;
+
+    /**
      * Construct the object
      *
      * @param ConfigInterface $config The configuration
      * @param string $name The identifier for the class
+     * @param $otherTypes Other types available to the complex type. Pass this to get better doc blocks for enums
      */
-    public function __construct(ConfigInterface $config, $name)
+    public function __construct(ConfigInterface $config, $name, TypeRegistry $otherTypes=null)
     {
         parent::__construct($config, $name, null);
         $this->members = array();
         $this->baseType = null;
         $this->abstract = false;
+        $this->otherTypes = $otherTypes ?? new TypeRegistry();
     }
 
     /**
@@ -101,8 +108,19 @@ class ComplexType extends Type
             $type = Validator::validateType($member->getType());
             $name = Validator::validateAttribute($member->getName());
             $typeHint = Validator::validateTypeHint($type);
+            $otherType = $this->otherTypes->get($type);
+            $docDescription = '';
+            if ($otherType instanceof Enum && $this->config->get('useUnderlyingEnumTypes')) {
+                $docDescription = sprintf(
+                    '@see %s for valid values',
+                    $otherType->getPhpNamespacedIdentifier()
+                );
+                $type = $otherType->getDatatype();
+                $typeHint = Validator::validateTypeHint($type);
+            }
 
             $comment = new PhpDocComment();
+            $comment->setDescription($docDescription);
             $comment->setVar(PhpDocElementFactory::getVar($type, $name, ''));
             $var = new PhpVariable('protected', $name, 'null', $comment);
             $this->class->addVariable($var);

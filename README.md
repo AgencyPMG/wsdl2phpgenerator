@@ -171,6 +171,11 @@ The following formats are supported:
 
 The proxy information is used by is used when accessing the WSDL to generate the code and for subsequent requests to the SOAP service.
 
+#### `useUnderlyingEnumTypes`
+
+This will swap out enum class names in `@param`, `@var`, and `@returns` docblock
+annotations and typehints for all enum properties on complex types.
+
 ##### Example usage
 
 The following configuration will use a proxy to access the [Google DoubleClick Ad Exchange Buyer SOAP API](https://developers.google.com/ad-exchange/buyer-soap/):

@@ -116,4 +116,9 @@ abstract class Type implements ClassGenerator
     {
         return $this->phpIdentifier;
     }
+
+    public function getPhpNamespacedIdentifier()
+    {
+        return $this->phpNamespacedIdentifier;
+    }
 }
