@@ -297,7 +297,12 @@ class Service implements ClassGenerator
             $comment->addParam(PhpDocElementFactory::getParam($arr['type'], $arr['name'], $arr['desc']));
         }
 
-        $source = '  return $this->__soapCall(\'' . $operation->getName() . '\', array(' . $operation->getParamStringNoTypeHints() . '));' . PHP_EOL;
+        $source = sprintf(
+            '    return $this->__soapCall("%s", [%s]);%s',
+            $operation->getName(),
+            $operation->getParamStringNoTypeHints(),
+            PHP_EOL
+        );
 
         $paramStr = $operation->getParamString($this->types);
 
