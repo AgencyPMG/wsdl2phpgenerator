@@ -285,7 +285,9 @@ class Service implements ClassGenerator
      */
     protected function createOperationMethod(Operation $operation)
     {
-        $name = Validator::validateOperation($operation->getName());
+        $name = Validator::validateOperation($this->filterOperationFunctionName(
+            $operation->getName()
+        ));
 
         $comment = new PhpDocComment($operation->getDescription());
         $comment->setReturn(PhpDocElementFactory::getReturn($operation->getReturns(), ''));
@@ -300,5 +302,17 @@ class Service implements ClassGenerator
         $paramStr = $operation->getParamString($this->types);
 
         return  new PhpFunction('public', $name, $paramStr, $source, $comment);
+    }
+
+    /**
+     * Filter the operation function name. Allows users to extend this
+     * class to modify how methods appear in service classes.
+     *
+     * @param $name the operation name to filter
+     * @return string a modified function name
+     */
+    protected function filterOperationFunctionName(string $name) : string
+    {
+        return lcfirst($name);
     }
 }

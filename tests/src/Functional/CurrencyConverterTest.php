@@ -48,7 +48,7 @@ class CurrencyConverterTest extends FunctionalTestCase
         // Make sure that we have expected constants and methods.
         $this->assertClassHasConst('USD', '\\CC\\Currency');
         $this->assertClassHasConst('EUR', '\\CC\\Currency');
-        $this->assertClassHasMethod('\\CC\\CurrencyConvertor', 'ConversionRate');
+        $this->assertClassHasMethod('\\CC\\CurrencyConvertor', 'conversionRate');
 
         // Setup and execute the service call.
         $service = new \CC\CurrencyConvertor();
