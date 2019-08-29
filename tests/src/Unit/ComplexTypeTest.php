@@ -57,7 +57,7 @@ class ComplexTypeTest extends CodeGenerationTestCase
         $property = 'dateTimeAttribute';
         $badDateTime = 'noDate';
         $this->setObjectProperty($object, $property, $badDateTime);
-        $this->assertFalse($object->getDateTimeAttribute());
+        $this->assertNull($object->getDateTimeAttribute());
 
         // Test passing variable datetime formats available in SOAP, http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#dateTime
         $now = new \DateTime();

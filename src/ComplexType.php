@@ -160,7 +160,7 @@ class ComplexType extends Type
                     '    try {',
                     sprintf('        return new \DateTime($this->%s);', $name),
                     '    } catch(\Exception $e) {',
-                    '        return false;',
+                    '        return null;',
                     '    }',
                 ];
             } else {
