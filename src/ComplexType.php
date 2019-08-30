@@ -131,13 +131,13 @@ class ComplexType extends Type
                         $constructorSource[] = sprintf(
                             '    $this->%1$s = null === $%1$s ? null : %2$s;',
                             $name,
-                            $this->buildDateFormatCode('$'.$name)
+                            $this->buildDateFormatCode('$'.$name, $member->getName())
                         );
                     } else {
                         $constructorSource[] = sprintf(
                             '    $this->%s = %s;',
                             $name,
-                            $this->buildDateFormatCode('$'.$name)
+                            $this->buildDateFormatCode('$'.$name, $member->getName())
                         );
                     }
                 } else {
@@ -185,13 +185,13 @@ class ComplexType extends Type
                     $setterCode = sprintf(
                         '    $this->%1$s = null === $%1$s ? null : %2$s;',
                         $name,
-                        $this->buildDateFormatCode('$'.$name)
+                        $this->buildDateFormatCode('$'.$name, $member->getName())
                     );
                 } else {
                     $setterCode = sprintf(
                         '    $this->%s = %s;',
                         $name,
-                        $this->buildDateFormatCode('$'.$name)
+                        $this->buildDateFormatCode('$'.$name, $member->getName())
                     );
                 }
             } else {
@@ -361,7 +361,16 @@ class ComplexType extends Type
         return array_merge($this->getBaseTypeMembers($type->baseType), $type->baseType->getMembers());
     }
 
-    protected function buildDateFormatCode(string $variableName) : string
+    /**
+     * Generate a datetime format code for the given $variableName. The $memberName
+     * is provided here for context. Subclasses may override this to any special date
+     * formatting that they may need.
+     *
+     * @param $variableName the variable with a datetime object
+     * @param $memberName the member of the complex type that's being formatted.
+     * @return string he generated format code
+     */
+    protected function buildDateFormatCode(string $variableName, string $memberName) : string
     {
         return sprintf('%s->format(\DateTime::ATOM)', $variableName);
     }
