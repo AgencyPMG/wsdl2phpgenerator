@@ -3,10 +3,11 @@
 
 namespace Wsdl2PhpGenerator\Tests\Unit;
 
-
+use ReflectionClass;
 use Wsdl2PhpGenerator\Config;
 use Wsdl2PhpGenerator\Service;
 use Wsdl2PhpGenerator\TypeRegistry;
+use Wsdl2PhpGenerator\ComplexType;
 use Wsdl2PhpGenerator\Tests\Functional\FunctionalTestCase;
 
 /**
@@ -61,7 +62,7 @@ class ServiceTest extends CodeGenerationTestCase
     public function testSoapClientClass($service)
     {
         // The service class should be a subclass of the configured soap client class.
-        $this->assertClassSubclassOf(new \ReflectionClass($service), $this->soapclientClass);
+        $this->assertClassSubclassOf(new ReflectionClass($service), $this->soapclientClass);
     }
 
     /**
@@ -84,5 +85,30 @@ class ServiceTest extends CodeGenerationTestCase
     {
         // The soap client options should be the same as the ones passed to the configuration.
         $this->assertEquals($this->soapclientOptions, $service->options);
+    }
+
+    public function testTypeAliasesAreIncludedInTheGeneratedClassmap()
+    {
+        $config = new Config(array(
+            'inputFile' => $this->wsdl,
+            'outputDir' => null,
+            'namespaceName' => $this->namespace,
+            'soapClientClass' => $this->soapclientClass,
+            'soapClientOptions' => $this->soapclientOptions,
+        ));
+
+        $types = new TypeRegistry();
+        $types->add(new ComplexType($config, 'OneType', $types), 'TwoType');
+        $service = new Service($config, __FUNCTION__, $types, 'Service description');
+        $this->generateClass($service, $this->namespace);
+
+        $ref = new ReflectionClass($this->namespace.'\\'.__FUNCTION__);
+        $classmapProp = $ref->getProperty('classmap');
+        $classmapProp->setAccessible(true);
+        $classmap = $classmapProp->getValue();
+        $this->assertArrayHasKey('OneType', $classmap);
+        $this->assertSame($this->namespace.'\\OneType', $classmap['OneType']);
+        $this->assertArrayHasKey('TwoType', $classmap);
+        $this->assertSame($this->namespace.'\\OneType', $classmap['TwoType']);
     }
 }
