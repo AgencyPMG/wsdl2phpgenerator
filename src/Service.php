@@ -242,9 +242,12 @@ class Service implements ClassGenerator
     protected function typesToClassmap()
     {
         $init = array();
-        foreach ($this->getTypes() as $type) {
+        foreach ($this->getTypes() as $typeAlias => $type) {
             if ($type instanceof ComplexType) {
                 $init[$type->getIdentifier()] = $this->getConfigValue('namespaceName') . "\\" . $type->getPhpIdentifier();
+                if ($typeAlias !== $type->getIdentifier()) {
+                    $init[$typeAlias] = $this->getConfigValue('namespaceName').'\\'.$type->getPhpIdentifier();
+                }
             }
         }
 
