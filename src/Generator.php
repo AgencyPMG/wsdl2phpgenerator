@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Wsdl2PhpGenerator\Filter\FilterFactory;
 use Wsdl2PhpGenerator\Xml\WsdlDocument;
 use Wsdl2PhpGenerator\Xml\ServiceNode;
+use Wsdl2PhpGenerator\Xml\TypeNode;
 
 /**
  * Class that contains functionality for generating classes from a wsdl file
@@ -155,10 +156,11 @@ class Generator implements GeneratorInterface
             $type = null;
 
             if ($typeNode->isComplex()) {
+
                 if ($typeNode->isArray()) {
-                    $type = new ArrayType($this->config, $typeNode->getName(), $this->types);
+                    $type = $this->createArrayType($typeNode);
                 } else {
-                    $type = new ComplexType($this->config, $typeNode->getName(), $this->types);
+                    $type = $this->createComplexType($typeNode);
                 }
 
                 $this->log('Loading type ' . $type->getPhpIdentifier());
@@ -173,12 +175,12 @@ class Generator implements GeneratorInterface
                     $type->addMember($typeName, $name, $nullable);
                 }
             } elseif ($enumValues = $typeNode->getEnumerations()) {
-                $type = new Enum($this->config, $typeNode->getName(), $typeNode->getRestriction());
+                $type = $this->createEnumType($typeNode);
                 array_walk($enumValues, function ($value) use ($type) {
                       $type->addValue($value);
                 });
             } elseif ($pattern = $typeNode->getPattern()) {
-                $type = new Pattern($this->config, $typeNode->getName(), $typeNode->getRestriction());
+                $type = $this->createPatternType($typeNode);
                 $type->setValue($pattern);
             }
 
@@ -261,5 +263,25 @@ class Generator implements GeneratorInterface
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
+    }
+
+    protected function createArrayType(TypeNode $typeNode) : ArrayType
+    {
+        return new ArrayType($this->config, $typeNode->getName(), $this->types);
+    }
+
+    protected function createComplexType(TypeNode $typeNode) : ComplexType
+    {
+        return new ComplexType($this->config, $typeNode->getName(), $this->types);
+    }
+
+    protected function createEnumType(TypeNode $typeNode) : Enum
+    {
+        return new Enum($this->config, $typeNode->getName(), $typeNode->getRestriction());
+    }
+
+    protected function createPatternType(TypeNode $typeNode) : Pattern
+    {
+        return new Pattern($this->config, $typeNode->getName(), $typeNode->getRestriction());
     }
 }
