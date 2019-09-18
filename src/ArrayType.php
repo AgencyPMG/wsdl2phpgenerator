@@ -147,7 +147,7 @@ class ArrayType extends ComplexType
             'getIterator',
             $this->buildParametersString(array(), false, false),
             sprintf(
-                '    return new \ArrayIterator($this->%s);',
+                '    return new \ArrayIterator($this->%s ?? []);',
                 $this->field->getName()
             ),
             $docblock
