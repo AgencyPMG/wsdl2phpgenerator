@@ -125,6 +125,13 @@ class ArrayTypeTest extends CodeGenerationTestCase
         }
     }
 
+    public function testIteratorImplementationWithUninitializedVariablesWorksCorrectly()
+    {
+        $object = new \ArrayTypeTestClass(); // uninitialized value!
+
+        $this->assertSame([], iterator_to_array($object));
+    }
+
     /**
      * Test if class implements the Countable interface correctly.
      */
