@@ -135,6 +135,13 @@ class ArrayTypeTest extends CodeGenerationTestCase
         $this->assertCount(count($this->items), $this->class);
     }
 
+    public function testCountableWithNonArrayValueCountsZero()
+    {
+        $object = new \ArrayTypeTestClass(); // uninitialized value
+
+        $this->assertCount(0, $object);
+    }
+
     /**
      * @group https://github.com/AgencyPMG/wsdl2phpgenerator/issues/7
      */
