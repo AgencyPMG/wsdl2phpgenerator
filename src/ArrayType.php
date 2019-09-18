@@ -147,7 +147,7 @@ class ArrayType extends ComplexType
             'getIterator',
             $this->buildParametersString(array(), false, false),
             sprintf(
-                '    return new \ArrayIterator($this->%s);',
+                '    return new \ArrayIterator($this->%s ?? []);',
                 $this->field->getName()
             ),
             $docblock
@@ -163,6 +163,7 @@ class ArrayType extends ComplexType
         $countDock = new PhpDocComment();
         $countDock->setDescription($description);
         $countDock->setReturn(PhpDocElementFactory::getReturn($this->arrayOf, 'Return count of elements'));
+
         $count = new PhpFunction(
             'public',
             'count',
@@ -171,7 +172,10 @@ class ArrayType extends ComplexType
                 false,
                 false
             ),
-            '  return count($this->' . $this->field->getName() . ');',
+            sprintf(
+                '    return is_array($this->%1$s) ? count($this->%1$s) : 0;',
+                $this->field->getName()
+            ),
             $countDock
         );
         $this->class->addFunction($count);
